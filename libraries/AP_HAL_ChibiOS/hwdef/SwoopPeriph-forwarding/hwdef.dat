@@ -1,0 +1,145 @@
+# hw definition file for processing by chibios_pins.py
+
+# Swoop CAN Node pinout mapping
+# GPIO1: PB5
+# GPIO2: PC14
+# GPIO3: PC15
+# GPIO4: PC13
+# GPIO5: PB8
+# GPIO6: PB9
+
+# ADC1: PA3   ADC1
+# ADC2: PA0   ADC1
+# ADC3: PA6   ADC2_IN3 (untested)
+# ADC4: PA2   ADC1
+
+# PWM1: PA15  TIM2_CH1_ETR
+# PWM2: PA1   TIM2_CH2
+# PWM3: PB10  TIM2_CH3
+# PWM4: PB11  TIM2_CH4
+# PWM5: PA7   TIM1_CH1N, TIM3_CH2 (both untested)
+
+# MCU class and specific type
+MCU STM32F303 STM32F303xC
+
+# bootloader starts firmware at 22k + 4k (STORAGE_FLASH), store parameters in page 10
+FLASH_RESERVE_START_KB 24
+FLASH_SIZE_KB 128
+define STORAGE_FLASH_PAGE 10
+define HAL_STORAGE_SIZE 800
+
+# board ID for firmware load
+APJ_BOARD_ID 1004
+
+# setup build for a peripheral firmware
+env AP_PERIPH 1
+define PERIPH_FW TRUE
+define HAL_BUILD_AP_PERIPH
+
+# enable watchdog
+define HAL_WATCHDOG_ENABLED_DEFAULT true
+
+# crystal frequency
+OSCILLATOR_HZ 8000000
+
+define CH_CFG_ST_FREQUENCY 1000
+define CH_CFG_ST_TIMEDELTA 0
+
+# UART
+SERIAL_ORDER USART2 USART1 EMPTY EMPTY 
+define HAL_UART_MIN_TX_SIZE 256
+define HAL_UART_MIN_RX_SIZE 128
+define HAL_UART_STACK_SIZE 0x300
+define SERIAL_BUFFERS_SIZE 512
+
+PA9  USART1_TX USART1 SPEED_HIGH
+PA10 USART1_RX USART1 SPEED_HIGH
+
+PB3 USART2_TX USART2 SPEED_HIGH NODMA
+PB4 USART2_RX USART2 SPEED_HIGH NODMA
+
+# Status LEDs
+PB0 LED_STAT1 OUTPUT LOW
+
+# I2C
+I2C_ORDER I2C1
+define HAL_I2C_CLEAR_ON_TIMEOUT 0
+define HAL_I2C_INTERNAL_MASK 0
+
+PB6 I2C1_SCL I2C1
+PB7 I2C1_SDA I2C1
+
+# SPI
+#PB13 SPI2_SCK SPI2
+#PB14 SPI2_MISO SPI2
+#PB15 SPI2_MOSI SPI2
+
+# Analog
+define HAL_USE_ADC FALSE
+define STM32_ADC_USE_ADC1 FALSE
+define HAL_DISABLE_ADC_DRIVER TRUE
+
+
+# PROCESS_STACK controls stack for main thread
+PROCESS_STACK 0x800
+# MAIN_STACK is stack of initial thread and of ISRs
+MAIN_STACK 0x300
+define HAL_DEVICE_THREAD_STACK 0x200
+
+define PORT_INT_REQUIRED_STACK 64
+
+# CAN
+PA11 CAN_RX CAN
+PA12 CAN_TX CAN
+define HAL_CAN_POOL_SIZE 6000
+define HAL_CAN_RX_QUEUE_SIZE 32
+
+# debugger support
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+define HAL_USE_I2C TRUE
+define STM32_I2C_USE_I2C1 TRUE
+
+define STORAGE_THD_WA_SIZE 512
+define IO_THD_WA_SIZE      512
+
+# use the app descriptor needed by MissionPlanner for CAN upload
+env APP_DESCRIPTOR MissionPlanner
+
+# reserve 256 bytes for comms between app and bootloader
+RAM_RESERVE_START 256
+
+# keep ROMFS uncompressed as we don't have enough RAM
+# to uncompress the bootloader at runtime
+env ROMFS_UNCOMPRESSED True
+
+## Things to save size:
+
+env DISABLE_SCRIPTING 1
+define HAL_MINIMIZE_FEATURES 1
+define HAL_REDUCE_DRIVERS
+define HAL_NO_GCS
+define HAL_NO_LOGGING
+define HAL_NO_MONITOR_THREAD
+define HAL_NO_RCIN_THREAD
+define HAL_NO_GPIO_IRQ
+define HAL_DISABLE_LOOP_DELAY
+
+# Reduce backend instances
+define GPS_MAX_RECEIVERS 1
+define GPS_MAX_INSTANCES 1
+define HAL_COMPASS_MAX_SENSORS 1
+define RANGEFINDER_MAX_INSTANCES 1
+define AIRSPEED_MAX_SENSORS 1
+define HAL_AIRSPEED_BUS_DEFAULT 0
+
+define HAL_USE_RTC FALSE
+define DISABLE_SERIAL_ESC_COMM TRUE
+define NO_DATAFLASH TRUE
+define DMA_RESERVE_SIZE 0
+define HAL_PERIPH_ENABLE_SLCAN
+
+define AP_PARAM_MAX_EMBEDDED_PARAM 128
+env DEFAULT_PARAMETERS 'defaults.parm'
+
