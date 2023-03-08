@@ -1044,6 +1044,10 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
     }
 
     switch (data_type_id) {
+    case UAVCAN_EQUIPMENT_AIR_DATA_TRUEAIRSPEED_ID:
+        hal.scheduler->reboot(true); //Reboot to bootloader!
+        *out_data_type_signature = UAVCAN_EQUIPMENT_AIR_DATA_TRUEAIRSPEED_SIGNATURE;
+        return true;
     case UAVCAN_PROTOCOL_GETNODEINFO_ID:
         *out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE;
         return true;
